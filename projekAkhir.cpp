@@ -379,6 +379,7 @@ int main()
 {
     // Contoh penggunaan
     TokoKelontong tokoKelontong;
+   
 
     int pilihan;
     do
@@ -398,15 +399,23 @@ int main()
         {
         case 1:
         {
-            Produk produkBaru;
-            cout << "Masukkan nama produk: ";
-            cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
-            cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
-            cout << "Masukkan harga produk: ";
-            cin >> produkBaru.harga;
-            cout << "Masukkan kode produk: ";
-            cin >> produkBaru.kode;
-            tambahProduk(tokoKelontong, produkBaru);
+            int jumlahBarang;
+            cout << "Masukkan total barang yang ingin Anda inputkan: ";
+            cin >> jumlahBarang;
+
+            for (int i = 0; i < jumlahBarang; ++i)
+            {
+                Produk produkBaru;
+                cout << "Masukkan nama produk: ";
+                cin.ignore();
+                cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
+                cout << "Masukkan harga produk: ";
+                cin >> produkBaru.harga;
+                cout << "Masukkan kode produk: ";
+                cin >> produkBaru.kode;
+                tambahProduk(tokoKelontong, produkBaru);
+            }
+
             break;
         }
         case 2:
