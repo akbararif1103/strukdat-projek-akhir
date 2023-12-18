@@ -214,6 +214,14 @@ int hashFunction(const char* code) {
 }
 
 void addProduct(GroceryStore& store, const Product& product) {
+    // Periksa apakah kode produk sudah ada dalam toko
+    for (int i = 0; i < store.productCount; ++i) {
+        if (strcmp(store.productList[i].code, product.code) == 0) {
+            cout << "Product with code " << product.code << " already exists. Cannot add duplicate products." << endl;
+            return;
+        }
+    }
+
     // Alokasi dinamis untuk menyimpan daftar produk
     if (store.productCount == 0) {
         store.productList = new Product[1];
@@ -236,6 +244,7 @@ void addProduct(GroceryStore& store, const Product& product) {
 
     cout << "Product added successfully." << endl;
 }
+
 
 Product searchByCode(const GroceryStore& store, const char* productCode) {
     int index = hashFunction(productCode);
