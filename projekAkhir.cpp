@@ -402,14 +402,15 @@ int main()
     int pilihan;
     do
     {
-        cout << "\nMenu:\n";
-        cout << "1. Tambah Produk\n";
-        cout << "2. Cari Produk berdasarkan Kode\n";
-        cout << "3. Cari Produk berdasarkan Rentang Nama\n";
-        cout << "4. Urutkan Produk berdasarkan Nama (Descending)\n";
-        cout << "5. Hapus Produk\n";
-        cout << "6. Lihat Riwayat Produk yang Dihapus\n";
-        cout << "0. Keluar\n";
+        cout << "\n------------|Menu|--------------\n\n";
+        cout << " 1. Tambah Produk\n";
+        cout << " 2. Searching (Kode)\n";
+        cout << " 3. Searching (Rentang Nama)\n";
+        cout << " 4. Sorting Descending (Nama)\n";
+        cout << " 5. Hapus Produk\n";
+        cout << " 6. Riwayat Produk yang Dihapus\n";
+        cout << " 0. Keluar\n";
+        cout << "\n================================\n\n";
         cout << "Masukkan pilihan Anda: ";
         cin >> pilihan;
 
@@ -417,21 +418,28 @@ int main()
         {
         case 1:
         {
+            system("cls");
             int jumlahBarang;
-            cout << "Masukkan total barang yang ingin Anda inputkan: ";
+            cout << "Masukkan banyak jenis produk yang ingin Anda inputkan: ";
             cin >> jumlahBarang;
+
+            system("cls");
+            cout << "-------------Menu Input Data---------------\n\n";
+            cout << "Masukkan Data Produk :" << endl << endl;
 
             for (int i = 0; i < jumlahBarang; ++i)
             {
                 Produk produkBaru;
-                cout << "Masukkan nama produk: ";
+                cout << " Nama Produk\t\t: ";
                 cin.ignore();
                 cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
-                cout << "Masukkan harga produk: ";
+                cout << " Harga Produk\t\t: ";
                 cin >> produkBaru.harga;
-                cout << "Masukkan kode produk: ";
+                cout << " Buat Kode Produk\t: ";
                 cin >> produkBaru.kode;
+                cout << endl;
                 tambahProduk(tokoKelontong, produkBaru);
+                cout << "\n-------------------------------------------" << endl;
             }
 
             break;
