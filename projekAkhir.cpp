@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 
@@ -42,20 +43,21 @@ struct DeletedProductNode
 // Struktur untuk manajemen toko
 struct GroceryStore
 {
-    Product *productList; // Daftar produk
+    Product *productList;                    // Daftar produk
     int productCount;
-    static const int HASH_TABLE_SIZE = 50; // Ukuran tabel hash
-    Product hashTable[HASH_TABLE_SIZE];    // Menggunakan satu dimensi untuk tabel hash
-    TreeNode *root;                        // Akar dari pohon biner
+    TreeNode *root;                          // Akar dari pohon biner
     DeletedProductNode *deletedProductsHead; // Linked list untuk menyimpan produk yang dihapus
     int deletedProductCount;
+    static const int HASH_TABLE_SIZE = 50;   // Ukuran tabel hash
+    Product hashTable[HASH_TABLE_SIZE];      // Menggunakan satu dimensi untuk tabel hash
 
-    GroceryStore() : productList(nullptr), productCount(0), deletedProductsHead(nullptr), deletedProductCount(0), root(nullptr) {}
+    GroceryStore() : productList(nullptr), productCount(0), root(nullptr), deletedProductsHead(nullptr), deletedProductCount(0) {}
     ~GroceryStore()
     {
         delete[] productList;
     }
 };
+
 // Fungsi hash sederhana
 int hashFunction(const char *code);
 
@@ -183,29 +185,20 @@ void searchByNameRange(const GroceryStore &store, const char *startName, const c
     }
 }
 
-
 void sortByNameDescending(GroceryStore &store)
 {
-    int n = store.productCount;
-
-    for (int i = 0; i < n - 1; ++i)
-    {
-        for (int j = 0; j < n - i - 1; ++j)
-        {
-            if (strcmp(store.productList[j].name, store.productList[j + 1].name) < 0)
-            {
-                // Swap products if they are in the wrong order
-                swap(store.productList[j], store.productList[j + 1]);
-            }
-        }
-    }
+    // Menggunakan algoritma sort() dari C++ STL
+    sort(store.productList, store.productList + store.productCount, [](const Product &a, const Product &b) {
+        return strcmp(a.name, b.name) > 0;
+    });
 
     cout << "Products sorted in descending order by name:" << endl;
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < store.productCount; ++i)
     {
         cout << store.productList[i].name << " - " << store.productList[i].price << endl;
     }
 }
+
 
 
 void addDeletedProductNode(GroceryStore &store, const Product &product)
@@ -225,20 +218,33 @@ void deleteProduct(GroceryStore &store, const char *productCode)
         if (strcmp(store.productList[i].code, productCode) == 0)
         {
             // Pindahkan produk yang dihapus ke dalam linked list produk yang dihapus
-            DeletedProductNode *newNode = new DeletedProductNode(store.productList[i]);
-            newNode->next = store.deletedProductsHead;
-            store.deletedProductsHead = newNode;
             addDeletedProductNode(store, store.productList[i]);
+
+            // Hapus produk dari daftar produk yang masih ada
+            for (int j = i; j < store.productCount - 1; ++j)
+            {
+                store.productList[j] = store.productList[j + 1];
+            }
+            --store.productCount;
 
             // Memanggil deleteFromTree untuk menghapus dari pohon biner
             store.root = deleteFromTree(store.root, productCode);
 
             cout << "Product deleted successfully." << endl;
+
+            // Jika diperlukan, urutkan ulang daftar produk yang masih ada
+            // Tidak perlu diurutkan jika hanya menghapus satu elemen
+            if (store.productCount > 1)
+            {
+                sortByNameDescending(store);
+            }
+
             return;
         }
     }
     cout << "Product with code " << productCode << " not found for deletion." << endl;
 }
+
 
 TreeNode *findMin(TreeNode *node)
 {
