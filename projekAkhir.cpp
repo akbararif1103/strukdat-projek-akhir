@@ -5,515 +5,510 @@
 using namespace std;
 
 // Enum untuk jenis urutan display
-enum DisplayOrder
+enum UrutanTampil
 {
-    IN_ORDER,
-    PRE_ORDER,
-    POST_ORDER
+    SESUAI_URUTAN,
+    PRE_URUTAN,
+    POST_URUTAN
 };
 
 // Struktur data untuk produk
-struct Product
+struct Produk
 {
-    char name[50];
-    double price;
-    char code[10];
+    char nama[50];
+    double harga;
+    char kode[10];
     // Tambahan informasi lainnya sesuai kebutuhan
 };
 
 // Node untuk pohon biner
-struct TreeNode
+struct NodePohon
 {
-    Product product;
-    TreeNode *left;
-    TreeNode *right;
+    Produk produk;
+    NodePohon *kiri;
+    NodePohon *kanan;
 
-    TreeNode(const Product &p) : product(p), left(nullptr), right(nullptr) {}
+    NodePohon(const Produk &p) : produk(p), kiri(nullptr), kanan(nullptr) {}
 };
 
 // Node untuk produk yang dihapus
-struct DeletedProductNode
+struct NodeProdukDihapus
 {
-    Product data;
-    DeletedProductNode *next;
+    Produk data;
+    NodeProdukDihapus *selanjutnya;
 
-    DeletedProductNode(const Product &p) : data(p), next(nullptr) {}
+    NodeProdukDihapus(const Produk &p) : data(p), selanjutnya(nullptr) {}
 };
 
 // Struktur untuk manajemen toko
-struct GroceryStore
+struct TokoKelontong
 {
-    Product *productList;                    // Daftar produk
-    int productCount;
-    TreeNode *root;                          // Akar dari pohon biner
-    DeletedProductNode *deletedProductsHead; // Linked list untuk menyimpan produk yang dihapus
-    int deletedProductCount;
-    static const int HASH_TABLE_SIZE = 50;   // Ukuran tabel hash
-    Product hashTable[HASH_TABLE_SIZE];      // Menggunakan satu dimensi untuk tabel hash
+    Produk *daftarProduk;                     // Daftar produk
+    int jumlahProduk;
+    NodePohon *akar;                          // Akar dari pohon biner
+    NodeProdukDihapus *produkDihapusAwal;    // Linked list untuk menyimpan produk yang dihapus
+    int jumlahProdukDihapus;
+    static const int UKURAN_TABEL_HASH = 50; // Ukuran tabel hash
+    Produk tabelHash[UKURAN_TABEL_HASH];     // Menggunakan satu dimensi untuk tabel hash
 
-    GroceryStore() : productList(nullptr), productCount(0), root(nullptr), deletedProductsHead(nullptr), deletedProductCount(0) {}
-    ~GroceryStore()
+    TokoKelontong() : daftarProduk(nullptr), jumlahProduk(0), akar(nullptr), produkDihapusAwal(nullptr), jumlahProdukDihapus(0) {}
+    ~TokoKelontong()
     {
-        delete[] productList;
+        delete[] daftarProduk;
     }
 };
 
 // Fungsi hash sederhana
-int hashFunction(const char *code);
+int fungsiHash(const char *kode);
 
 // Fungsi untuk menambahkan produk
-void addProduct(GroceryStore &store, const Product &product);
+void tambahProduk(TokoKelontong &toko, const Produk &produk);
 
 // Fungsi untuk mencari produk berdasarkan kode produk menggunakan hash
-Product searchByCode(const GroceryStore &store, const char *productCode);
+Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk);
 
 // Fungsi untuk mencari dan menampilkan produk berdasarkan rentang nama pada pohon biner
-void searchByNameRange(const GroceryStore &store, const char *startName, const char *endName);
+void cariDenganRentangNama(const TokoKelontong &toko, const char *namaAwal, const char *namaAkhir);
 
 // Fungsi untuk mengurutkan produk berdasarkan nama secara descending (post-order)
-void sortByNameDescending(const TreeNode *node);
+void urutBerdasarkanNamaDescending(const NodePohon *node);
 
 // Fungsi untuk mengurutkan produk berdasarkan nama secara descending pada pohon biner
-void sortByNameDescending(const GroceryStore &store);
+void urutBerdasarkanNamaDescending(const TokoKelontong &toko);
 
 // Fungsi untuk menambahkan produk yang dihapus ke dalam linked list
-void addDeletedProductNode(GroceryStore &store, const Product &product);
+void tambahNodeProdukDihapus(TokoKelontong &toko, const Produk &produk);
 
 // Fungsi internal untuk memasukkan produk ke dalam pohon biner
-TreeNode *insertIntoTree(TreeNode *node, const Product &product);
+NodePohon *sisipkanKePohon(NodePohon *node, const Produk &produk);
 
 // Fungsi untuk menghapus produk dari pohon biner
-TreeNode *deleteFromTree(TreeNode *node, const char *productCode);
+NodePohon *hapusDariPohon(NodePohon *node, const char *kodeProduk);
 
 // Fungsi untuk menampilkan produk yang dihapus
-void displayDeletedProductsHistory(const GroceryStore &store, DisplayOrder order);
+void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil urutan);
 
 // Fungsi-fungsi untuk menampilkan produk yang dihapus dengan urutan tertentu
-void displayDeletedProductsHistoryInOrder(const DeletedProductNode *node);
-void displayDeletedProductsHistoryPreOrder(const DeletedProductNode *node);
-void displayDeletedProductsHistoryPostOrder(const DeletedProductNode *node);
+void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node);
+void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node);
+void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node);
 
 // Fungsi untuk menampilkan produk yang dihapus
-void displayDeletedProduct(const Product &deletedProduct);
+void tampilkanProdukDihapus(const Produk &produkDihapus);
 
-TreeNode *deleteFromTree(TreeNode *node, const Product &product);
+NodePohon *hapusDariPohon(NodePohon *node, const Produk &produk);
 
-bool isEmpty(const GroceryStore &store);
+bool kosong(const TokoKelontong &toko);
 
-int hashFunction(const char *code)
+int fungsiHash(const char *kode)
 {
-    int sum = 0;
-    for (int i = 0; code[i] != '\0'; ++i)
+    int jumlah = 0;
+    for (int i = 0; kode[i] != '\0'; ++i)
     {
-        // Menambahkan kode ASCII huruf ke sum
-        sum += tolower(code[i]);
+        // Menambahkan kode ASCII huruf ke jumlah
+        jumlah += tolower(kode[i]);
     }
-    return sum % GroceryStore::HASH_TABLE_SIZE;
+    return jumlah % TokoKelontong::UKURAN_TABEL_HASH;
 }
 
-void addProduct(GroceryStore &store, const Product &product)
+void tambahProduk(TokoKelontong &toko, const Produk &produk)
 {
     // Periksa apakah kode produk sudah ada dalam toko
-    for (int i = 0; i < store.productCount; ++i)
+    for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        if (strcmp(store.productList[i].code, product.code) == 0)
+        if (strcmp(toko.daftarProduk[i].kode, produk.kode) == 0)
         {
-            cout << "Product with code " << product.code << " already exists. Cannot add duplicate products." << endl;
+            cout << "Produk dengan kode " << produk.kode << " sudah ada. Tidak dapat menambahkan produk duplikat." << endl;
             return;
         }
     }
 
     // Periksa apakah produk dengan kode yang sama telah dihapus sebelumnya
-    DeletedProductNode *current = store.deletedProductsHead;
-    while (current != nullptr)
+    NodeProdukDihapus *saatIni = toko.produkDihapusAwal;
+    while (saatIni != nullptr)
     {
-        if (strcmp(current->data.code, product.code) == 0)
+        if (strcmp(saatIni->data.kode, produk.kode) == 0)
         {
-            cout << "Product with code " << product.code << " has been deleted. Cannot add the same product again." << endl;
+            cout << "Produk dengan kode " << produk.kode << " telah dihapus. Tidak dapat menambahkan produk yang sama lagi." << endl;
             return;
         }
-        current = current->next;
+        saatIni = saatIni->selanjutnya;
     }
 
     // Alokasi dinamis untuk menyimpan daftar produk
-    Product *temp = new Product[store.productCount + 1];
-    memcpy(temp, store.productList, sizeof(Product) * store.productCount);
+    Produk *temp = new Produk[toko.jumlahProduk + 1];
+    memcpy(temp, toko.daftarProduk, sizeof(Produk) * toko.jumlahProduk);
 
     // Menambahkan produk ke daftar
-    temp[store.productCount] = product;
+    temp[toko.jumlahProduk] = produk;
 
     // Hapus daftar produk yang lama
-    delete[] store.productList;
+    delete[] toko.daftarProduk;
 
     // Menetapkan daftar produk yang baru
-    store.productList = temp;
-    ++store.productCount;
+    toko.daftarProduk = temp;
+    ++toko.jumlahProduk;
 
     // Menambahkan produk ke tabel hash
-    int index = hashFunction(product.code);
-    store.hashTable[index] = product;
+    int indeks = fungsiHash(produk.kode);
+    toko.tabelHash[indeks] = produk;
 
     // Menambahkan produk ke dalam pohon biner
-    store.root = insertIntoTree(store.root, product);
+    toko.akar = sisipkanKePohon(toko.akar, produk);
 
-    cout << "Product added successfully." << endl;
+    cout << "Produk berhasil ditambahkan." << endl;
 }
 
-Product searchByCode(const GroceryStore &store, const char *productCode)
+Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
 {
-    int index = hashFunction(productCode);
-    return store.hashTable[index];
+    int indeks = fungsiHash(kodeProduk);
+        return toko.tabelHash[indeks];
 }
 
-void searchByNameRange(const GroceryStore &store, const char *startName, const char *endName)
+void cariDenganNama(const TokoKelontong &toko, const char *nama)
 {
-    bool found = false;
+    bool ditemukan = false;
 
-    cout << "Products within the specified name range:" << endl;
-    for (int i = 0; i < store.productCount; ++i)
+    cout << "Produk dengan nama yang sesuai:" << endl;
+    for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        if (strcmp(store.productList[i].name, startName) >= 0 && strcmp(store.productList[i].name, endName) <= 0)
+        if (strstr(toko.daftarProduk[i].nama, nama) != nullptr)
         {
-            cout << store.productList[i].name << " - " << store.productList[i].price << endl;
-            found = true;
+            cout << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
+            ditemukan = true;
         }
     }
 
-    if (!found)
+    if (!ditemukan)
     {
-        cout << "No products found within the specified name range." << endl;
+        cout << "Tidak ada produk dengan nama yang sesuai." << endl;
     }
 }
 
-void sortByNameDescending(GroceryStore &store)
+
+void urutBerdasarkanNamaDescending(TokoKelontong &toko)
 {
     // Menggunakan algoritma sort() dari C++ STL
-    sort(store.productList, store.productList + store.productCount, [](const Product &a, const Product &b) {
-        return strcmp(a.name, b.name) > 0;
+    sort(toko.daftarProduk, toko.daftarProduk + toko.jumlahProduk, [](const Produk &a, const Produk &b) {
+        return strcmp(a.nama, b.nama) > 0;
     });
 
-    cout << "Products sorted in descending order by name:" << endl;
-    for (int i = 0; i < store.productCount; ++i)
+    cout << "Produk diurutkan secara descending berdasarkan nama:" << endl;
+    for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << store.productList[i].name << " - " << store.productList[i].price << endl;
+        cout << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
     }
 }
 
-
-
-void addDeletedProductNode(GroceryStore &store, const Product &product)
+void tambahNodeProdukDihapus(TokoKelontong &toko, const Produk &produk)
 {
     // Buat node baru
-    DeletedProductNode *newNode = new DeletedProductNode(product);
+    NodeProdukDihapus *nodeBaru = new NodeProdukDihapus(produk);
 
     // Tambahkan ke depan linked list
-    newNode->next = store.deletedProductsHead;
-    store.deletedProductsHead = newNode;
+    nodeBaru->selanjutnya = toko.produkDihapusAwal;
+    toko.produkDihapusAwal = nodeBaru;
 }
 
-void deleteProduct(GroceryStore &store, const char *productCode)
+void hapusProduk(TokoKelontong &toko, const char *kodeProduk)
 {
-    for (int i = 0; i < store.productCount; ++i)
+    for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        if (strcmp(store.productList[i].code, productCode) == 0)
+        if (strcmp(toko.daftarProduk[i].kode, kodeProduk) == 0)
         {
             // Pindahkan produk yang dihapus ke dalam linked list produk yang dihapus
-            addDeletedProductNode(store, store.productList[i]);
+            tambahNodeProdukDihapus(toko, toko.daftarProduk[i]);
 
             // Hapus produk dari daftar produk yang masih ada
-            for (int j = i; j < store.productCount - 1; ++j)
+            for (int j = i; j < toko.jumlahProduk - 1; ++j)
             {
-                store.productList[j] = store.productList[j + 1];
+                toko.daftarProduk[j] = toko.daftarProduk[j + 1];
             }
-            --store.productCount;
+            --toko.jumlahProduk;
 
-            // Memanggil deleteFromTree untuk menghapus dari pohon biner
-            store.root = deleteFromTree(store.root, productCode);
+            // Memanggil hapusDariPohon untuk menghapus dari pohon biner
+            toko.akar = hapusDariPohon(toko.akar, kodeProduk);
 
-            cout << "Product deleted successfully." << endl;
+            cout << "Produk berhasil dihapus." << endl;
 
             // Jika diperlukan, urutkan ulang daftar produk yang masih ada
             // Tidak perlu diurutkan jika hanya menghapus satu elemen
-            if (store.productCount > 1)
+            if (toko.jumlahProduk > 1)
             {
-                sortByNameDescending(store);
+                urutBerdasarkanNamaDescending(toko);
             }
 
             return;
         }
     }
-    cout << "Product with code " << productCode << " not found for deletion." << endl;
+    cout << "Produk dengan kode " << kodeProduk << " tidak ditemukan untuk dihapus." << endl;
 }
 
-
-TreeNode *findMin(TreeNode *node)
+NodePohon *temukanMin(NodePohon *node)
 {
-    while (node->left != nullptr)
+    while (node->kiri != nullptr)
     {
-        node = node->left;
+        node = node->kiri;
     }
     return node;
 }
 
-TreeNode *deleteFromTree(TreeNode *node, const char *productCode)
+NodePohon *hapusDariPohon(NodePohon *node, const char *kodeProduk)
 {
     if (node == nullptr)
     {
         return node;
     }
 
-    if (strcmp(productCode, node->product.code) < 0)
+    if (strcmp(kodeProduk, node->produk.kode) < 0)
     {
-        node->left = deleteFromTree(node->left, productCode);
+        node->kiri = hapusDariPohon(node->kiri, kodeProduk);
     }
-    else if (strcmp(productCode, node->product.code) > 0)
+    else if (strcmp(kodeProduk, node->produk.kode) > 0)
     {
-        node->right = deleteFromTree(node->right, productCode);
+        node->kanan = hapusDariPohon(node->kanan, kodeProduk);
     }
     else
     {
         // Node dengan satu anak atau tanpa anak
-        if (node->left == nullptr)
+        if (node->kiri == nullptr)
         {
-            TreeNode *temp = node->right;
+            NodePohon *temp = node->kanan;
             delete node;
             return temp;
         }
-        else if (node->right == nullptr)
+        else if (node->kanan == nullptr)
         {
-            TreeNode *temp = node->left;
+            NodePohon *temp = node->kiri;
             delete node;
             return temp;
         }
 
         // Node dengan dua anak, dapatkan node pengganti terkecil di subpohon kanan
-        TreeNode *temp = findMin(node->right);
+        NodePohon *temp = temukanMin(node->kanan);
 
         // Salin data dari node pengganti ke node saat ini
-        node->product = temp->product;
+        node->produk = temp->produk;
 
         // Hapus node pengganti
-        node->right = deleteFromTree(node->right, temp->product.code);
+        node->kanan = hapusDariPohon(node->kanan, temp->produk.kode);
     }
 
     return node;
 }
 
-
-void displayDeletedProductsHistory(const GroceryStore &store, DisplayOrder order)
+void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil urutan)
 {
-    cout << "Deleted Products History:" << endl;
+    cout << "Riwayat Produk yang Dihapus:" << endl;
 
-    if (order == IN_ORDER)
+    if (urutan == SESUAI_URUTAN)
     {
-        // Menampilkan berdasarkan urutan in-order
-        displayDeletedProductsHistoryInOrder(store.deletedProductsHead);
+        // Menampilkan berdasarkan urutan sesuai
+        tampilkanRiwayatProdukDihapusSesuaiUrutan(toko.produkDihapusAwal);
     }
-    else if (order == PRE_ORDER)
+    else if (urutan == PRE_URUTAN)
     {
-        // Menampilkan berdasarkan urutan pre-order
-        displayDeletedProductsHistoryPreOrder(store.deletedProductsHead);
+        // Menampilkan berdasarkan urutan pre
+        tampilkanRiwayatProdukDihapusPreUrutan(toko.produkDihapusAwal);
     }
-    else if (order == POST_ORDER)
+    else if (urutan == POST_URUTAN)
     {
-        // Menampilkan berdasarkan urutan post-order
-        displayDeletedProductsHistoryPostOrder(store.deletedProductsHead);
+        // Menampilkan berdasarkan urutan post
+        tampilkanRiwayatProdukDihapusPostUrutan(toko.produkDihapusAwal);
     }
 }
 
-void displayDeletedProductsHistoryInOrder(const DeletedProductNode *node)
-{
-    if (node != nullptr)
-    {
-        displayDeletedProductsHistoryInOrder(node->next);
-        displayDeletedProduct(node->data);
-    }
-}
-
-void displayDeletedProductsHistoryPreOrder(const DeletedProductNode *node)
+void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
 {
     if (node != nullptr)
     {
-        displayDeletedProduct(node->data);
-        displayDeletedProductsHistoryPreOrder(node->next);
+        tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
+        tampilkanProdukDihapus(node->data);
     }
 }
 
-void displayDeletedProductsHistoryPostOrder(const DeletedProductNode *node)
+void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
 {
     if (node != nullptr)
     {
-        displayDeletedProductsHistoryPostOrder(node->next);
-        displayDeletedProduct(node->data);
+        tampilkanProdukDihapus(node->data);
+        tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
     }
 }
 
-void displayDeletedProduct(const Product &deletedProduct)
+void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
 {
-    cout << "Product Code: " << deletedProduct.code << " - Product Name: " << deletedProduct.name
-         << " - Product Price: " << deletedProduct.price << endl;
+    if (node != nullptr)
+    {
+        tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
+        tampilkanProdukDihapus(node->data);
+    }
 }
 
-TreeNode *insertIntoTree(TreeNode *node, const Product &product)
+void tampilkanProdukDihapus(const Produk &produkDihapus)
+{
+    cout << "Kode Produk: " << produkDihapus.kode << " - Nama Produk: " << produkDihapus.nama
+         << " - Harga Produk: " << produkDihapus.harga << endl;
+}
+
+NodePohon *sisipkanKePohon(NodePohon *node, const Produk &produk)
 {
     if (node == nullptr)
     {
-        return new TreeNode(product);
+        return new NodePohon(produk);
     }
 
-    if (strcmp(product.name, node->product.name) <= 0)
+    if (strcmp(produk.nama, node->produk.nama) <= 0)
     {
-        node->left = insertIntoTree(node->left, product);
+        node->kiri = sisipkanKePohon(node->kiri, produk);
     }
     else
     {
-        node->right = insertIntoTree(node->right, product);
+        node->kanan = sisipkanKePohon(node->kanan, produk);
     }
 
     return node;
 }
 
-bool isEmpty(const GroceryStore &store)
+bool kosong(const TokoKelontong &toko)
 {
-    return store.productCount == 0;
+    return toko.jumlahProduk == 0;
 }
-
 
 int main()
 {
     // Contoh penggunaan
-    GroceryStore groceryStore;
+    TokoKelontong tokoKelontong;
 
-    int choice;
+    int pilihan;
     do
     {
         cout << "\nMenu:\n";
-        cout << "1. Add Product\n";
-        cout << "2. Search Products by Code\n";
-        cout << "3. Search Products by Name Range\n";
-        cout << "4. Sort Products by Name (Descending)\n";
-        cout << "5. Delete Product\n";
-        cout << "6. View Deleted Products History\n";
-        cout << "0. Exit\n";
-        cout << "Enter your choice: ";
-        cin >> choice;
+        cout << "1. Tambah Produk\n";
+        cout << "2. Cari Produk berdasarkan Kode\n";
+        cout << "3. Cari Produk berdasarkan Rentang Nama\n";
+        cout << "4. Urutkan Produk berdasarkan Nama (Descending)\n";
+        cout << "5. Hapus Produk\n";
+        cout << "6. Lihat Riwayat Produk yang Dihapus\n";
+        cout << "0. Keluar\n";
+        cout << "Masukkan pilihan Anda: ";
+        cin >> pilihan;
 
-        switch (choice)
+        switch (pilihan)
         {
         case 1:
         {
-            Product newProduct;
-            cout << "Enter product name: ";
-            cin.ignore(); // Membersihkan newline character dari masukan sebelumnya
-            cin.getline(newProduct.name, sizeof(newProduct.name));
-            cout << "Enter product price: ";
-            cin >> newProduct.price;
-            cout << "Enter product code: ";
-            cin >> newProduct.code;
-            addProduct(groceryStore, newProduct);
+            Produk produkBaru;
+            cout << "Masukkan nama produk: ";
+            cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
+            cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
+            cout << "Masukkan harga produk: ";
+            cin >> produkBaru.harga;
+            cout << "Masukkan kode produk: ";
+            cin >> produkBaru.kode;
+            tambahProduk(tokoKelontong, produkBaru);
             break;
         }
         case 2:
         {
-            char productCode[10];
-            cout << "Enter product code to search: ";
-            cin >> productCode;
-            Product result = searchByCode(groceryStore, productCode);
-            if (result.name[0] != '\0')
+            char kodeProduk[10];
+            cout << "Masukkan kode produk untuk dicari: ";
+            cin >> kodeProduk;
+            Produk hasil = cariDenganKode(tokoKelontong, kodeProduk);
+            if (hasil.nama[0] != '\0')
             {
-                cout << "Product Found: " << result.name << " - " << result.price << endl;
+                cout << "Produk Ditemukan: " << hasil.nama << " - " << hasil.harga << endl;
             }
             else
             {
-                cout << "Product Not Found." << endl;
+                cout << "Produk Tidak Ditemukan." << endl;
             }
             break;
         }
         case 3:
-        {
-            char startName[50], endName[50];
-            if (!isEmpty(groceryStore))
-            {
-                cout << "Enter start name for range: ";
-                cin.ignore(); // Membersihkan newline character dari masukan sebelumnya
-                cin.getline(startName, sizeof(startName));
+{
+    char namaCari[50];
+    if (!kosong(tokoKelontong))
+    {
+        cout << "Masukkan nama produk yang dicari: ";
+        cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
+        cin.getline(namaCari, sizeof(namaCari));
+        cariDenganNama(tokoKelontong, namaCari);
+    }
+    else
+    {
+        cout << "Daftar produk kosong." << endl;
+    }
+    break;
+}
 
-                cout << "Enter end name for range: ";
-                cin.getline(endName, sizeof(endName));
-
-                searchByNameRange(groceryStore, startName, endName);
-            }
-            else
-            {
-                cout << "Product list is empty." << endl;
-            }
-            break;
-        }
         case 4:
-            if (!isEmpty(groceryStore))
+            if (!kosong(tokoKelontong))
             {
-                sortByNameDescending(groceryStore);
+                urutBerdasarkanNamaDescending(tokoKelontong);
             }
             else
             {
-                cout << "Product list is empty." << endl;
+                cout << "Daftar produk kosong." << endl;
             }
             break;
         case 5:
         { // Tambahkan case untuk menu menghapus produk
-            if (!isEmpty(groceryStore))
+            if (!kosong(tokoKelontong))
             {
-                char productCode[10];
-                cout << "Enter product code to delete: ";
-                cin >> productCode;
-                deleteProduct(groceryStore, productCode);
+                char kodeProduk[10];
+                cout << "Masukkan kode produk untuk dihapus: ";
+                cin >> kodeProduk;
+                hapusProduk(tokoKelontong, kodeProduk);
             }
             else
             {
-                cout << "Product list is empty." << endl;
+                cout << "Daftar produk kosong." << endl;
             }
             break;
         }
         case 6:
         {
-            int displayChoice;
+            int pilihanTampil;
 
-            cout << "Choose display order for deleted products history:\n";
-            cout << "1. In-order\n";
-            cout << "2. Pre-order\n";
-            cout << "3. Post-order\n";
-            cout << "Enter your choice: ";
-            cin >> displayChoice;
+            cout << "Pilih urutan tampilan untuk riwayat produk yang dihapus:\n";
+            cout << "1. Sesuai urutan\n";
+            cout << "2. Pre-urutan\n";
+            cout << "3. Post-urutan\n";
+            cout << "Masukkan pilihan Anda: ";
+            cin >> pilihanTampil;
 
-            DisplayOrder displayOrder;
-            switch (displayChoice)
+            UrutanTampil urutanTampil;
+            switch (pilihanTampil)
             {
             case 1:
-                displayOrder = IN_ORDER;
+                urutanTampil = SESUAI_URUTAN;
                 break;
             case 2:
-                displayOrder = PRE_ORDER;
+                urutanTampil = PRE_URUTAN;
                 break;
             case 3:
-                displayOrder = POST_ORDER;
+                urutanTampil = POST_URUTAN;
                 break;
             default:
-                cout << "Invalid choice. Defaulting to In-order display.\n";
-                displayOrder = IN_ORDER;
+                cout << "Pilihan tidak valid. Kembali ke tampilan sesuai urutan secara default.\n";
+                urutanTampil = SESUAI_URUTAN;
                 break;
             }
-            displayDeletedProductsHistory(groceryStore, displayOrder);
+            tampilkanRiwayatProdukDihapus(tokoKelontong, urutanTampil);
 
             break;
         }
         case 0:
-            cout << "Exiting program. Goodbye!\n";
+            cout << "Keluar dari program. Selamat tinggal!\n";
             break;
         default:
-            cout << "Invalid choice. Please try again.\n";
+            cout << "Pilihan tidak valid. Silakan coba lagi.\n";
             break;
         }
-    } while (choice != 0);
+    } while (pilihan != 0);
 
     return 0;
 }
+
+
