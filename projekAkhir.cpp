@@ -44,10 +44,10 @@ struct NodeProdukDihapus
 // Struktur untuk manajemen toko
 struct TokoKelontong
 {
-    Produk *daftarProduk;                     // Daftar produk
+    Produk *daftarProduk; // Daftar produk
     int jumlahProduk;
-    NodePohon *akar;                          // Akar dari pohon biner
-    NodeProdukDihapus *produkDihapusAwal;    // Linked list untuk menyimpan produk yang dihapus
+    NodePohon *akar;                      // Akar dari pohon biner
+    NodeProdukDihapus *produkDihapusAwal; // Linked list untuk menyimpan produk yang dihapus
     int jumlahProdukDihapus;
     static const int UKURAN_TABEL_HASH = 50; // Ukuran tabel hash
     Produk tabelHash[UKURAN_TABEL_HASH];     // Menggunakan satu dimensi untuk tabel hash
@@ -99,7 +99,6 @@ void tampilkanProdukDihapus(const Produk &produkDihapus);
 
 // Prototipe fungsi untuk menampilkan tabel produk
 void tampilkanTabelProduk(const TokoKelontong &toko);
-
 
 NodePohon *hapusDariPohon(NodePohon *node, const Produk &produk);
 
@@ -167,7 +166,7 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk)
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
 {
     int indeks = fungsiHash(kodeProduk);
-        return toko.tabelHash[indeks];
+    return toko.tabelHash[indeks];
 }
 
 void cariDenganNama(const TokoKelontong &toko, const char *nama)
@@ -190,13 +189,11 @@ void cariDenganNama(const TokoKelontong &toko, const char *nama)
     }
 }
 
-
 void urutBerdasarkanNamaDescending(TokoKelontong &toko)
 {
     // Menggunakan algoritma sort() dari C++ STL
-    sort(toko.daftarProduk, toko.daftarProduk + toko.jumlahProduk, [](const Produk &a, const Produk &b) {
-        return strcmp(a.nama, b.nama) > 0;
-    });
+    sort(toko.daftarProduk, toko.daftarProduk + toko.jumlahProduk, [](const Produk &a, const Produk &b)
+         { return strcmp(a.nama, b.nama) > 0; });
 
     cout << "Produk diurutkan secara descending berdasarkan nama:" << endl;
     for (int i = 0; i < toko.jumlahProduk; ++i)
@@ -392,15 +389,13 @@ void tampilkanTabelProduk(const TokoKelontong &toko)
     }
 }
 
-
 int main()
 {
     // Contoh penggunaan
     TokoKelontong tokoKelontong;
-   
 
-    int pilihan;
-    do
+    int pilihan = -1; // Inisialisasi agar loop pertama kali dijalankan
+    while (pilihan != 0)
     {
         cout << "\n------------|Menu|--------------\n\n";
         cout << " 1. Tambah Produk\n";
@@ -425,7 +420,8 @@ int main()
 
             system("cls");
             cout << "-------------Menu Input Data---------------\n\n";
-            cout << "Masukkan Data Produk :" << endl << endl;
+            cout << "Masukkan Data Produk :" << endl
+                 << endl;
 
             for (int i = 0; i < jumlahBarang; ++i)
             {
@@ -446,13 +442,19 @@ int main()
         }
         case 2:
         {
+            system("cls");
             char kodeProduk[10];
-            cout << "Masukkan kode produk untuk dicari: ";
+            cout << "-------------Menu Searching Menggunakan Kode Produk---------------\n\n";
+            cout << "Masukkan kode produk untuk dicari: \n";
             cin >> kodeProduk;
+            cout << "HASIL : " << endl;
+
             Produk hasil = cariDenganKode(tokoKelontong, kodeProduk);
             if (hasil.nama[0] != '\0')
             {
-                cout << "Produk Ditemukan: " << hasil.nama << " - " << hasil.harga << endl;
+                cout << " Kode Produk\t :" << hasil.kode << endl;
+                cout << " Nama Produk\t :" << hasil.nama << endl;
+                cout << " Harga Produk\t :" << hasil.harga << endl;
             }
             else
             {
@@ -461,21 +463,21 @@ int main()
             break;
         }
         case 3:
-{
-    char namaCari[50];
-    if (!kosong(tokoKelontong))
-    {
-        cout << "Masukkan nama produk yang dicari: ";
-        cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
-        cin.getline(namaCari, sizeof(namaCari));
-        cariDenganNama(tokoKelontong, namaCari);
-    }
-    else
-    {
-        cout << "Daftar produk kosong." << endl;
-    }
-    break;
-}
+        {
+            char namaCari[50];
+            if (!kosong(tokoKelontong))
+            {
+                cout << "Masukkan nama produk yang dicari: ";
+                cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
+                cin.getline(namaCari, sizeof(namaCari));
+                cariDenganNama(tokoKelontong, namaCari);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
+            break;
+        }
 
         case 4:
             if (!kosong(tokoKelontong))
@@ -487,24 +489,24 @@ int main()
                 cout << "Daftar produk kosong." << endl;
             }
             break;
-       case 5:
-{
-    if (!kosong(tokoKelontong))
-    {
-        // Tampilkan tabel produk sebelum menghapus
-        tampilkanTabelProduk(tokoKelontong);
+        case 5:
+        {
+            if (!kosong(tokoKelontong))
+            {
+                // Tampilkan tabel produk sebelum menghapus
+                tampilkanTabelProduk(tokoKelontong);
 
-        char kodeProduk[10];
-        cout << "Masukkan kode produk untuk dihapus: ";
-        cin >> kodeProduk;
-        hapusProduk(tokoKelontong, kodeProduk);
-    }
-    else
-    {
-        cout << "Daftar produk kosong." << endl;
-    }
-    break;
-}
+                char kodeProduk[10];
+                cout << "Masukkan kode produk untuk dihapus: ";
+                cin >> kodeProduk;
+                hapusProduk(tokoKelontong, kodeProduk);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
+            break;
+        }
 
         case 6:
         {
@@ -545,9 +547,19 @@ int main()
             cout << "Pilihan tidak valid. Silakan coba lagi.\n";
             break;
         }
-    } while (pilihan != 0);
+
+        if (pilihan != 0)
+        {
+            char kembali;
+            cout << "\nKembali ke menu utama? (y/n): ";
+            cin >> kembali;
+            if (tolower(kembali) != 'y')
+            {
+                pilihan = 0; // Keluar dari loop jika tidak ingin kembali ke menu utama
+            }
+        }
+    }
 
     return 0;
 }
-
 
