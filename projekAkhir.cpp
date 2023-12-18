@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
@@ -95,6 +96,10 @@ void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node);
 
 // Fungsi untuk menampilkan produk yang dihapus
 void tampilkanProdukDihapus(const Produk &produkDihapus);
+
+// Prototipe fungsi untuk menampilkan tabel produk
+void tampilkanTabelProduk(const TokoKelontong &toko);
+
 
 NodePohon *hapusDariPohon(NodePohon *node, const Produk &produk);
 
@@ -375,6 +380,19 @@ bool kosong(const TokoKelontong &toko)
     return toko.jumlahProduk == 0;
 }
 
+void tampilkanTabelProduk(const TokoKelontong &toko)
+{
+    cout << "Tabel Produk:" << endl;
+    cout << setw(10) << "Kode" << setw(15) << "Harga" << setw(30) << "Nama" << endl;
+    cout << setfill('-') << setw(55) << "-" << setfill(' ') << endl;
+
+    for (int i = 0; i < toko.jumlahProduk; ++i)
+    {
+        cout << setw(10) << toko.daftarProduk[i].kode << setw(15) << toko.daftarProduk[i].harga << setw(30) << toko.daftarProduk[i].nama << endl;
+    }
+}
+
+
 int main()
 {
     // Contoh penggunaan
@@ -461,21 +479,25 @@ int main()
                 cout << "Daftar produk kosong." << endl;
             }
             break;
-        case 5:
-        { // Tambahkan case untuk menu menghapus produk
-            if (!kosong(tokoKelontong))
-            {
-                char kodeProduk[10];
-                cout << "Masukkan kode produk untuk dihapus: ";
-                cin >> kodeProduk;
-                hapusProduk(tokoKelontong, kodeProduk);
-            }
-            else
-            {
-                cout << "Daftar produk kosong." << endl;
-            }
-            break;
-        }
+       case 5:
+{
+    if (!kosong(tokoKelontong))
+    {
+        // Tampilkan tabel produk sebelum menghapus
+        tampilkanTabelProduk(tokoKelontong);
+
+        char kodeProduk[10];
+        cout << "Masukkan kode produk untuk dihapus: ";
+        cin >> kodeProduk;
+        hapusProduk(tokoKelontong, kodeProduk);
+    }
+    else
+    {
+        cout << "Daftar produk kosong." << endl;
+    }
+    break;
+}
+
         case 6:
         {
             int pilihanTampil;
