@@ -397,6 +397,7 @@ int main()
     int pilihan = -1; // Inisialisasi agar loop pertama kali dijalankan
     while (pilihan != 0)
     {
+        system("cls");
         cout << "\n------------|Menu|--------------\n\n";
         cout << " 1. Tambah Produk\n";
         cout << " 2. Searching (Kode)\n";
@@ -464,6 +465,7 @@ int main()
         }
         case 3:
         {
+            system("cls");
             char namaCari[50];
             if (!kosong(tokoKelontong))
             {
@@ -482,6 +484,7 @@ int main()
         case 4:
             if (!kosong(tokoKelontong))
             {
+                system("cls");
                 urutBerdasarkanNamaDescending(tokoKelontong);
             }
             else
@@ -494,6 +497,7 @@ int main()
             if (!kosong(tokoKelontong))
             {
                 // Tampilkan tabel produk sebelum menghapus
+                system("cls");
                 tampilkanTabelProduk(tokoKelontong);
 
                 char kodeProduk[10];
@@ -510,6 +514,7 @@ int main()
 
         case 6:
         {
+            system("cls");
             int pilihanTampil;
 
             cout << "Pilih urutan tampilan untuk riwayat produk yang dihapus:\n";
