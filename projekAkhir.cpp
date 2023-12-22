@@ -22,6 +22,12 @@ struct Produk
     // Tambahan informasi lainnya sesuai kebutuhan
 };
 
+struct RentangNama
+{
+    char namaAwal[50];
+    char namaAkhir[50];
+};
+
 // Node untuk pohon biner
 struct NodePohon
 {
@@ -68,8 +74,13 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk);
 // Fungsi untuk mencari produk berdasarkan kode produk menggunakan hash
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk);
 
+// Fungsi internal untuk memasukkan produk ke dalam pohon biner berdasarkan nama
+NodePohon *sisipkanKePohonRentang(NodePohon *node, const Produk &produk);
+
 // Fungsi untuk mencari dan menampilkan produk berdasarkan rentang nama pada pohon biner
-void cariDenganRentangNama(const TokoKelontong &toko, const char *namaAwal, const char *namaAkhir);
+void cariDenganRentangNamaPTB(const TokoKelontong &toko, const RentangNama &rentang);
+
+void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &rentang);
 
 // Fungsi untuk mengurutkan produk berdasarkan nama secara descending (post-order)
 void urutBerdasarkanNamaDescending(const NodePohon *node);
@@ -169,15 +180,7 @@ Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
 {
     int indeks = fungsiHash(kodeProduk);
 
-    // Check if the hash table entry is empty
-    if (toko.tabelHash[indeks].nama[0] == '\0')
-    {
-        Produk notFound;
-        notFound.nama[0] = '\0';
-        return notFound;
-    }
-
-    // Check if the product in the hash table matches the search code
+    // Cek apakah produk ditemukan pada indeks hash
     if (strcmp(toko.tabelHash[indeks].kode, kodeProduk) == 0)
     {
         return toko.tabelHash[indeks];
@@ -200,25 +203,56 @@ Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
     return notFound;
 }
 
-void cariDenganNama(const TokoKelontong &toko, const char *nama)
+NodePohon *sisipkanKePohonRentang(NodePohon *node, const Produk &produk)
 {
-    bool ditemukan = false;
-
-    cout << "Produk dengan nama yang sesuai:" << endl;
-    for (int i = 0; i < toko.jumlahProduk; ++i)
+    if (node == nullptr)
     {
-        if (strstr(toko.daftarProduk[i].nama, nama) != nullptr)
+        return new NodePohon(produk);
+    }
+
+    if (strcmp(produk.nama, node->produk.nama) <= 0)
+    {
+        node->kiri = sisipkanKePohonRentang(node->kiri, produk);
+    }
+    else
+    {
+        node->kanan = sisipkanKePohonRentang(node->kanan, produk);
+    }
+
+    return node;
+}
+
+void cariDenganRentangNamaPTB(const TokoKelontong &toko, const RentangNama &rentang)
+{
+    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << "):" << endl;
+    cariDenganRentangNamaPTBRekursif(toko.akar, rentang);
+}
+
+void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &rentang)
+{
+    if (node != nullptr)
+    {
+        cout << "Produk dalam rentang nama ditemukan:" << endl;
+        // Cek apakah produk dalam rentang nama
+        if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
         {
-            cout << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
-            ditemukan = true;
+            cout << node->produk.nama << " - " << node->produk.harga << endl;
+        }
+
+        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
+        if (strcmp(node->produk.nama, rentang.namaAwal) > 0)
+        {
+            cariDenganRentangNamaPTBRekursif(node->kiri, rentang);
+        }
+
+        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kanan
+        if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
+        {
+            cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
         }
     }
-
-    if (!ditemukan)
-    {
-        cout << "Tidak ada produk dengan nama yang sesuai." << endl;
-    }
 }
+
 
 void urutBerdasarkanNamaDescending(TokoKelontong &toko)
 {
@@ -229,7 +263,7 @@ void urutBerdasarkanNamaDescending(TokoKelontong &toko)
     cout << "Produk diurutkan secara descending berdasarkan nama:" << endl;
     for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
+        cout << toko.daftarProduk[i].kode << " - " << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
     }
 }
 
@@ -498,18 +532,22 @@ int main()
         case 3:
         {
             system("cls");
-            char namaCari[50];
-            if (!kosong(tokoKelontong))
-            {
-                cout << "Masukkan nama produk yang dicari: ";
-                cin.ignore(); // Membersihkan karakter newline dari input sebelumnya
-                cin.getline(namaCari, sizeof(namaCari));
-                cariDenganNama(tokoKelontong, namaCari);
-            }
-            else
-            {
-                cout << "Daftar produk kosong." << endl;
-            }
+            char namaAwal[50];
+            char namaAkhir[50];
+
+            cout << "-------------Menu Pencarian Rentang Nama---------------\n\n";
+            cout << "Masukkan nama awal rentang: ";
+            cin.ignore();
+            cin.getline(namaAwal, sizeof(namaAwal));
+
+            cout << "Masukkan nama akhir rentang: ";
+            cin.getline(namaAkhir, sizeof(namaAkhir));
+
+            RentangNama rentang;
+            strcpy(rentang.namaAwal, namaAwal);
+            strcpy(rentang.namaAkhir, namaAkhir);
+
+            cariDenganRentangNamaPTB(tokoKelontong, rentang);
             break;
         }
 
