@@ -106,13 +106,15 @@ bool kosong(const TokoKelontong &toko);
 
 int fungsiHash(const char *kode)
 {
-    int jumlah = 0;
-    for (int i = 0; kode[i] != '\0'; ++i)
+    int hash = 0;
+    int len = strlen(kode);
+
+    for (int i = 0; i < len; ++i)
     {
-        // Menambahkan kode ASCII huruf ke jumlah
-        jumlah += tolower(kode[i]);
+        hash = 31 * hash + kode[i];
     }
-    return jumlah % TokoKelontong::UKURAN_TABEL_HASH;
+
+    return abs(hash) % TokoKelontong::UKURAN_TABEL_HASH;
 }
 
 void tambahProduk(TokoKelontong &toko, const Produk &produk)
@@ -166,7 +168,36 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk)
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
 {
     int indeks = fungsiHash(kodeProduk);
-    return toko.tabelHash[indeks];
+
+    // Check if the hash table entry is empty
+    if (toko.tabelHash[indeks].nama[0] == '\0')
+    {
+        Produk notFound;
+        notFound.nama[0] = '\0';
+        return notFound;
+    }
+
+    // Check if the product in the hash table matches the search code
+    if (strcmp(toko.tabelHash[indeks].kode, kodeProduk) == 0)
+    {
+        return toko.tabelHash[indeks];
+    }
+    else
+    {
+        // Handle collision by searching linearly in the hash table
+        for (int i = (indeks + 1) % TokoKelontong::UKURAN_TABEL_HASH; i != indeks; i = (i + 1) % TokoKelontong::UKURAN_TABEL_HASH)
+        {
+            if (strcmp(toko.tabelHash[i].kode, kodeProduk) == 0)
+            {
+                return toko.tabelHash[i];
+            }
+        }
+    }
+
+    // Product not found
+    Produk notFound;
+    notFound.nama[0] = '\0';
+    return notFound;
 }
 
 void cariDenganNama(const TokoKelontong &toko, const char *nama)
@@ -445,7 +476,7 @@ int main()
         {
             system("cls");
             char kodeProduk[10];
-            cout << "-------------Menu Searching Menggunakan Kode Produk---------------\n\n";
+            cout << "-------------Menu Pencarian Menggunakan Kode Produk---------------\n\n";
             cout << "Masukkan kode produk untuk dicari: \n";
             cin >> kodeProduk;
             cout << "HASIL : " << endl;
@@ -459,10 +490,11 @@ int main()
             }
             else
             {
-                cout << "Produk Tidak Ditemukan." << endl;
+                cout << "Produk dengan kode " << kodeProduk << " tidak ditemukan." << endl;
             }
             break;
         }
+
         case 3:
         {
             system("cls");
@@ -567,4 +599,3 @@ int main()
 
     return 0;
 }
-
