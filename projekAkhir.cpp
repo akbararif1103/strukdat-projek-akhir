@@ -252,38 +252,37 @@ NodePohon *sisipkanKePohonRentang(NodePohon *node, const Produk &produk)
 
 void cariDenganRentangNamaPTB(const TokoKelontong &toko, const RentangNama &rentang)
 {
-    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << ") " << endl << endl;
+    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << ") " << endl
+         << endl;
     cariDenganRentangNamaPTBRekursif(toko.akar, rentang);
 }
 
 void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &rentang)
 {
     if (node != nullptr)
-{
-    
-    // Cek apakah produk dalam rentang nama
-    if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
     {
-        cout << " Kode Produk\t :" << node->produk.kode << endl;
-        cout << " Nama Produk\t :" << node->produk.nama << endl;
-        cout << " Harga Produk\t :" << node->produk.harga << endl;
-        cout << "-------------------------------------------\n";
+
+        // Cek apakah produk dalam rentang nama
+        if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
+        {
+            cout << " Kode Produk\t :" << node->produk.kode << endl;
+            cout << " Nama Produk\t :" << node->produk.nama << endl;
+            cout << " Harga Produk\t :" << node->produk.harga << endl;
+            cout << "-------------------------------------------\n";
+        }
+
+        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
+        if (strcmp(node->produk.nama, rentang.namaAwal) > 0)
+        {
+            cariDenganRentangNamaPTBRekursif(node->kiri, rentang);
+        }
+
+        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kanan
+        if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
+        {
+            cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
+        }
     }
-
-    // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
-    if (strcmp(node->produk.nama, rentang.namaAwal) > 0)
-    {
-        cariDenganRentangNamaPTBRekursif(node->kiri, rentang);
-    }
-
-    // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kanan
-    if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
-    {
-        cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
-    }
-
-}
-
 }
 
 // Implementasi fungsi tampilkanDataProdukHash
@@ -311,7 +310,8 @@ void urutBerdasarkanNamaDescending(TokoKelontong &toko)
     sort(toko.daftarProduk, toko.daftarProduk + toko.jumlahProduk, [](const Produk &a, const Produk &b)
          { return strcmp(a.nama, b.nama) > 0; });
 
-    cout << "Tampil Data Produk Sorting (descending) berdasarkan nama: \n" << endl;
+    cout << "Tampil Data Produk Sorting (descending) berdasarkan nama: \n"
+         << endl;
     cout << "+" << setfill('=') << setw(74) << "+" << endl;
     cout << left << setfill(' ') << setw(9) << "|" << setw(13) << "Kode"
          << "|";
@@ -363,13 +363,6 @@ void hapusProduk(TokoKelontong &toko, const char *kodeProduk)
             toko.akar = hapusDariPohon(toko.akar, kodeProduk);
 
             cout << "Produk berhasil dihapus." << endl;
-
-            // Jika diperlukan, urutkan ulang daftar produk yang masih ada
-            // Tidak perlu diurutkan jika hanya menghapus satu elemen
-            if (toko.jumlahProduk > 1)
-            {
-                urutBerdasarkanNamaDescending(toko);
-            }
 
             return;
         }
@@ -458,10 +451,7 @@ void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
         tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
     }
-    else
-    {
-        cout << "Tidak ada produk yang dihapus" << endl;
-    }
+    
 }
 
 void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
@@ -471,10 +461,7 @@ void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
         tampilkanProdukDihapus(node->data);
         tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
     }
-    else
-    {
-        cout << "Tidak ada produk yang dihapus" << endl;
-    }
+    
 }
 
 void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
@@ -484,16 +471,16 @@ void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
         tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
     }
-    else
-    {
-        cout << "Tidak ada produk yang dihapus" << endl;
-    }
+    
 }
 
 void tampilkanProdukDihapus(const Produk &produkDihapus)
 {
-    cout << "Kode Produk: " << produkDihapus.kode << " - Nama Produk: " << produkDihapus.nama
-         << " - Harga Produk: " << produkDihapus.harga << endl;
+    cout << " Kode Produk\t :" << produkDihapus.kode << endl;
+            cout << " Nama Produk\t :" << produkDihapus.nama << endl;
+            cout << " Harga Produk\t :" << produkDihapus.harga << endl;
+            cout << "-------------------------------------------" << endl;
+    
 }
 
 NodePohon *sisipkanKePohon(NodePohon *node, const Produk &produk)
@@ -522,15 +509,26 @@ bool kosong(const TokoKelontong &toko)
 
 void tampilkanTabelProduk(const TokoKelontong &toko)
 {
-    cout << "Tabel Produk:\n"
-         << endl;
-    cout << setw(10) << "Kode" << setw(30) << "Nama" << setw(15) << "Harga" << endl;
-    cout << setfill('-') << setw(55) << "-" << setfill(' ') << endl;
+    cout << "+" << setfill('=') << setw(74) << "+" << endl;
+    cout << left << setfill(' ') << setw(9) << "|" << setw(13) << "Kode"
+         << "|";
+    cout << left << setfill(' ') << setw(15) << " " << setw(20) << "Nama"
+         << "|";
+    cout << left << setfill(' ') << setw(5) << " " << setw(10) << "Harga"
+         << "|" << endl;
+
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
 
     for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << setw(10) << toko.daftarProduk[i].kode << setw(30) << toko.daftarProduk[i].nama << setw(15) << toko.daftarProduk[i].harga << endl;
+        cout << left << setfill(' ') << setw(9) << "|" << setw(13) << toko.daftarProduk[i].kode
+             << "|";
+        cout << left << setfill(' ') << setw(15) << " " << setw(20) << toko.daftarProduk[i].nama
+             << "|";
+        cout << left << setfill(' ') << setw(5) << " " << setw(10) << toko.daftarProduk[i].harga
+             << "|" << endl;
     }
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
 }
 
 int main()
@@ -634,12 +632,14 @@ int main()
                 {
                     cout << " Kode Produk\t :" << hasil.kode << endl;
                     cout << " Nama Produk\t :" << hasil.nama << endl;
-                    cout << " Harga Produk\t :" << hasil.harga << endl << endl;
+                    cout << " Harga Produk\t :" << hasil.harga << endl
+                         << endl;
                     cout << "-------------------------------------------\n";
                 }
                 else
                 {
-                    cout << " Produk dengan kode '" << kodeProduk << "' tidak ditemukan." << endl << endl;
+                    cout << " Produk dengan kode '" << kodeProduk << "' tidak ditemukan." << endl
+                         << endl;
                 }
             }
             else
@@ -680,6 +680,7 @@ int main()
 
         case 5:
         {
+            system("cls");
             if (!kosong(tokoKelontong))
             {
                 system("cls");
@@ -693,14 +694,16 @@ int main()
         }
         case 6:
         {
+            system("cls");
             if (!kosong(tokoKelontong))
             {
                 // Tampilkan tabel produk sebelum menghapus
                 system("cls");
+                cout << "-------------Menu Hapus Produk---------------\n\n";
                 tampilkanTabelProduk(tokoKelontong);
 
                 char kodeProduk[10];
-                cout << "Masukkan kode produk untuk dihapus: ";
+                cout << "\nMasukkan kode produk untuk dihapus: ";
                 cin >> kodeProduk;
                 hapusProduk(tokoKelontong, kodeProduk);
             }
@@ -714,34 +717,44 @@ int main()
         case 7:
         {
             system("cls");
-            int pilihanTampil;
-
-            cout << "Pilih urutan tampilan untuk riwayat produk yang dihapus:\n";
-            cout << "1. Sesuai urutan\n";
-            cout << "2. Pre-urutan\n";
-            cout << "3. Post-urutan\n";
-            cout << "Masukkan pilihan Anda: ";
-            cin >> pilihanTampil;
-
-            UrutanTampil urutanTampil;
-            switch (pilihanTampil)
+            if (!kosong(tokoKelontong))
             {
-            case 1:
-                urutanTampil = SESUAI_URUTAN;
-                break;
-            case 2:
-                urutanTampil = PRE_URUTAN;
-                break;
-            case 3:
-                urutanTampil = POST_URUTAN;
-                break;
-            default:
-                cout << "Pilihan tidak valid. Kembali ke tampilan sesuai urutan secara default.\n";
-                urutanTampil = SESUAI_URUTAN;
-                break;
-            }
-            tampilkanRiwayatProdukDihapus(tokoKelontong, urutanTampil);
+                int pilihanTampil;
 
+                cout << "-------------Riwayat Hapus Produk---------------\n\n";
+
+                cout << "Pilih urutan tampilan untuk riwayat produk yang dihapus:\n";
+                cout << "1. Sesuai urutan\n";
+                cout << "2. Pre-urutan\n";
+                cout << "3. Post-urutan\n"
+                     << endl;
+                cout << "Masukkan pilihan Anda: ";
+                cin >> pilihanTampil;
+                cout << endl;
+
+                UrutanTampil urutanTampil;
+                switch (pilihanTampil)
+                {
+                case 1:
+                    urutanTampil = SESUAI_URUTAN;
+                    break;
+                case 2:
+                    urutanTampil = PRE_URUTAN;
+                    break;
+                case 3:
+                    urutanTampil = POST_URUTAN;
+                    break;
+                default:
+                    cout << "Pilihan tidak valid. Kembali ke tampilan sesuai urutan secara default.\n";
+                    urutanTampil = SESUAI_URUTAN;
+                    break;
+                }
+                tampilkanRiwayatProdukDihapus(tokoKelontong, urutanTampil);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
             break;
         }
         case 0:
