@@ -181,14 +181,27 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk)
 
 void tampilkanDataProdukInput(const TokoKelontong &toko)
 {
-    cout << "Data Produk yang Telah Diinput:\n";
-    cout << setw(10) << "Kode" << setw(15) << "Harga" << setw(30) << "Nama" << endl;
-    cout << setfill('-') << setw(55) << "-" << setfill(' ') << endl;
+    cout << "-------------Menu Tampilan Data---------------\n\n";
+    cout << "+" << setfill('=') << setw(74) << "+" << endl;
+    cout << left << setfill(' ') << setw(9) << "|" << setw(13) << "Kode"
+         << "|";
+    cout << left << setfill(' ') << setw(15) << " " << setw(20) << "Nama"
+         << "|";
+    cout << left << setfill(' ') << setw(5) << " " << setw(10) << "Harga"
+         << "|" << endl;
+
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
 
     for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << setw(10) << toko.daftarProduk[i].kode << setw(15) << toko.daftarProduk[i].harga << setw(30) << toko.daftarProduk[i].nama << endl;
+        cout << left << setfill(' ') << setw(9) << "|" << setw(13) << toko.daftarProduk[i].kode
+             << "|";
+        cout << left << setfill(' ') << setw(15) << " " << setw(20) << toko.daftarProduk[i].nama
+             << "|";
+        cout << left << setfill(' ') << setw(5) << " " << setw(10) << toko.daftarProduk[i].harga
+             << "|" << endl;
     }
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
 }
 
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
@@ -479,13 +492,14 @@ bool kosong(const TokoKelontong &toko)
 
 void tampilkanTabelProduk(const TokoKelontong &toko)
 {
-    cout << "Tabel Produk:" << endl;
-    cout << setw(10) << "Kode" << setw(15) << "Harga" << setw(30) << "Nama" << endl;
+    cout << "Tabel Produk:\n"
+         << endl;
+    cout << setw(10) << "Kode" << setw(30) << "Nama" << setw(15) << "Harga" << endl;
     cout << setfill('-') << setw(55) << "-" << setfill(' ') << endl;
 
     for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << setw(10) << toko.daftarProduk[i].kode << setw(15) << toko.daftarProduk[i].harga << setw(30) << toko.daftarProduk[i].nama << endl;
+        cout << setw(10) << toko.daftarProduk[i].kode << setw(30) << toko.daftarProduk[i].nama << setw(15) << toko.daftarProduk[i].harga << endl;
     }
 }
 
@@ -544,17 +558,17 @@ int main()
         }
         case 2:
         {
-           system("cls");
-        if (!kosong(tokoKelontong))
-        {
-            // Tampilkan data produk menggunakan struktur hash
-            tampilkanDataProdukInput(tokoKelontong);
-        }
-        else
-        {
-            cout << "Daftar produk kosong." << endl;
-        }
-        break;
+            system("cls");
+            if (!kosong(tokoKelontong))
+            {
+                // Tampilkan data produk menggunakan struktur hash
+                tampilkanDataProdukInput(tokoKelontong);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
+            break;
         }
         case 3:
         {
