@@ -232,11 +232,13 @@ void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &
 {
     if (node != nullptr)
     {
-        cout << "Produk dalam rentang nama ditemukan:" << endl;
+        cout << "Hasil : \ny";
         // Cek apakah produk dalam rentang nama
         if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
         {
-            cout << node->produk.nama << " - " << node->produk.harga << endl;
+            cout << " Kode Produk\t :" << node->produk.kode << endl;
+            cout << " Nama Produk\t :" << node->produk.nama << endl;
+            cout << " Harga Produk\t :" << node->produk.harga << endl;
         }
 
         // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
@@ -525,9 +527,10 @@ int main()
             system("cls");
             char kodeProduk[10];
             cout << "-------------Menu Pencarian Menggunakan Kode Produk---------------\n\n";
-            cout << "Masukkan kode produk untuk dicari: \n";
+            cout << "Masukkan kode produk untuk dicari:";
             cin >> kodeProduk;
-            cout << "HASIL : " << endl;
+
+            cout << "\nHASIL : " << endl;
 
             Produk hasil = cariDenganKode(tokoKelontong, kodeProduk);
             if (hasil.nama[0] != '\0')
@@ -538,7 +541,7 @@ int main()
             }
             else
             {
-                cout << "Produk dengan kode " << kodeProduk << " tidak ditemukan." << endl;
+                cout << " Produk dengan kode '" << kodeProduk << "' tidak ditemukan." << endl;
             }
             break;
         }
