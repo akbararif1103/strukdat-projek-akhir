@@ -439,7 +439,9 @@ void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
     {
         tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
-    } else {
+    }
+    else
+    {
         cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
@@ -450,7 +452,9 @@ void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
     {
         tampilkanProdukDihapus(node->data);
         tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
-    } else {
+    }
+    else
+    {
         cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
@@ -461,7 +465,9 @@ void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
     {
         tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
-    } else {
+    }
+    else
+    {
         cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
@@ -595,23 +601,32 @@ int main()
         case 3:
         {
             system("cls");
-            char kodeProduk[10];
-            cout << "-------------Menu Pencarian Menggunakan Kode Produk---------------\n\n";
-            cout << "Masukkan kode produk untuk dicari:";
-            cin >> kodeProduk;
-
-            cout << "\nHASIL : " << endl;
-
-            Produk hasil = cariDenganKode(tokoKelontong, kodeProduk);
-            if (hasil.nama[0] != '\0')
+            if (!kosong(tokoKelontong))
             {
-                cout << " Kode Produk\t :" << hasil.kode << endl;
-                cout << " Nama Produk\t :" << hasil.nama << endl;
-                cout << " Harga Produk\t :" << hasil.harga << endl;
+                char kodeProduk[10];
+                cout << "-------------Menu Pencarian Menggunakan Kode Produk---------------\n\n";
+                cout << "Masukkan 'kode' produk untuk dicari: ";
+                cin >> kodeProduk;
+
+                cout << "\nHASIL : \n"
+                     << endl;
+
+                Produk hasil = cariDenganKode(tokoKelontong, kodeProduk);
+                if (hasil.nama[0] != '\0')
+                {
+                    cout << " Kode Produk\t :" << hasil.kode << endl;
+                    cout << " Nama Produk\t :" << hasil.nama << endl;
+                    cout << " Harga Produk\t :" << hasil.harga << endl << endl;
+                    cout << "-------------------------------------------\n";
+                }
+                else
+                {
+                    cout << " Produk dengan kode '" << kodeProduk << "' tidak ditemukan." << endl << endl;
+                }
             }
             else
             {
-                cout << " Produk dengan kode '" << kodeProduk << "' tidak ditemukan." << endl;
+                cout << "Daftar produk kosong." << endl;
             }
             break;
         }
@@ -619,22 +634,29 @@ int main()
         case 4:
         {
             system("cls");
-            char namaAwal[50];
-            char namaAkhir[50];
+            if (!kosong(tokoKelontong))
+            {
+                char namaAwal[50];
+                char namaAkhir[50];
 
-            cout << "-------------Menu Pencarian Rentang Nama---------------\n\n";
-            cout << "Masukkan nama awal rentang: ";
-            cin.ignore();
-            cin.getline(namaAwal, sizeof(namaAwal));
+                cout << "-------------Menu Pencarian Rentang Nama---------------\n\n";
+                cout << "Masukkan nama awal rentang: ";
+                cin.ignore();
+                cin.getline(namaAwal, sizeof(namaAwal));
 
-            cout << "Masukkan nama akhir rentang: ";
-            cin.getline(namaAkhir, sizeof(namaAkhir));
+                cout << "Masukkan nama akhir rentang: ";
+                cin.getline(namaAkhir, sizeof(namaAkhir));
 
-            RentangNama rentang;
-            strcpy(rentang.namaAwal, namaAwal);
-            strcpy(rentang.namaAkhir, namaAkhir);
+                RentangNama rentang;
+                strcpy(rentang.namaAwal, namaAwal);
+                strcpy(rentang.namaAkhir, namaAkhir);
 
-            cariDenganRentangNamaPTB(tokoKelontong, rentang);
+                cariDenganRentangNamaPTB(tokoKelontong, rentang);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
             break;
         }
 
