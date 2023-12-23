@@ -252,7 +252,7 @@ NodePohon *sisipkanKePohonRentang(NodePohon *node, const Produk &produk)
 
 void cariDenganRentangNamaPTB(const TokoKelontong &toko, const RentangNama &rentang)
 {
-    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << ") " << endl;
+    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << ") " << endl << endl;
     cariDenganRentangNamaPTBRekursif(toko.akar, rentang);
 }
 
@@ -643,11 +643,11 @@ int main()
                 char namaAkhir[50];
 
                 cout << "-------------Menu Pencarian Rentang Nama---------------\n\n";
-                cout << "Masukkan nama 'awal rentang'\t: ";
+                cout << "Masukkan abjad 'awal rentang'\t: ";
                 cin.ignore();
                 cin.getline(namaAwal, sizeof(namaAwal));
 
-                cout << "Masukkan nama 'akhir rentang'\t: ";
+                cout << "Masukkan abjad 'akhir rentang'\t: ";
                 cin.getline(namaAkhir, sizeof(namaAkhir));
 
                 RentangNama rentang;
