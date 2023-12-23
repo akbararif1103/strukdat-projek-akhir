@@ -451,7 +451,6 @@ void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
         tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
     }
-    
 }
 
 void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
@@ -461,7 +460,6 @@ void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
         tampilkanProdukDihapus(node->data);
         tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
     }
-    
 }
 
 void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
@@ -471,16 +469,14 @@ void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
         tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
     }
-    
 }
 
 void tampilkanProdukDihapus(const Produk &produkDihapus)
 {
     cout << " Kode Produk\t :" << produkDihapus.kode << endl;
-            cout << " Nama Produk\t :" << produkDihapus.nama << endl;
-            cout << " Harga Produk\t :" << produkDihapus.harga << endl;
-            cout << "-------------------------------------------" << endl;
-    
+    cout << " Nama Produk\t :" << produkDihapus.nama << endl;
+    cout << " Harga Produk\t :" << produkDihapus.harga << endl;
+    cout << "-------------------------------------------" << endl;
 }
 
 NodePohon *sisipkanKePohon(NodePohon *node, const Produk &produk)
@@ -665,11 +661,18 @@ int main()
                 cout << "Masukkan abjad 'akhir rentang'\t: ";
                 cin.getline(namaAkhir, sizeof(namaAkhir));
 
-                RentangNama rentang;
-                strcpy(rentang.namaAwal, namaAwal);
-                strcpy(rentang.namaAkhir, namaAkhir);
+                if (namaAkhir[0] < namaAwal[0])
+                {
+                    cout << "\nAbjad yang dimasukan kebalik, harus sesuai dengan urutan abjad\n\n";
+                }
+                else
+                {
+                    RentangNama rentang;
+                    strcpy(rentang.namaAwal, namaAwal);
+                    strcpy(rentang.namaAkhir, namaAkhir);
 
-                cariDenganRentangNamaPTB(tokoKelontong, rentang);
+                    cariDenganRentangNamaPTB(tokoKelontong, rentang);
+                }
             }
             else
             {
