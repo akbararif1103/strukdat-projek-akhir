@@ -311,11 +311,26 @@ void urutBerdasarkanNamaDescending(TokoKelontong &toko)
     sort(toko.daftarProduk, toko.daftarProduk + toko.jumlahProduk, [](const Produk &a, const Produk &b)
          { return strcmp(a.nama, b.nama) > 0; });
 
-    cout << "Produk diurutkan secara descending berdasarkan nama:" << endl;
+    cout << "Tampil Data Produk Sorting (descending) berdasarkan nama: \n" << endl;
+    cout << "+" << setfill('=') << setw(74) << "+" << endl;
+    cout << left << setfill(' ') << setw(9) << "|" << setw(13) << "Kode"
+         << "|";
+    cout << left << setfill(' ') << setw(15) << " " << setw(20) << "Nama"
+         << "|";
+    cout << left << setfill(' ') << setw(5) << " " << setw(10) << "Harga"
+         << "|" << endl;
+
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
     for (int i = 0; i < toko.jumlahProduk; ++i)
     {
-        cout << toko.daftarProduk[i].kode << " - " << toko.daftarProduk[i].nama << " - " << toko.daftarProduk[i].harga << endl;
+        cout << left << setfill(' ') << setw(9) << "|" << setw(13) << toko.daftarProduk[i].kode
+             << "|";
+        cout << left << setfill(' ') << setw(15) << " " << setw(20) << toko.daftarProduk[i].nama
+             << "|";
+        cout << left << setfill(' ') << setw(5) << " " << setw(10) << toko.daftarProduk[i].harga
+             << "|" << endl;
     }
+    cout << right << "+" << setfill('=') << setw(74) << "+" << endl;
 }
 
 void tambahNodeProdukDihapus(TokoKelontong &toko, const Produk &produk)
@@ -664,6 +679,7 @@ int main()
         }
 
         case 5:
+        {
             if (!kosong(tokoKelontong))
             {
                 system("cls");
@@ -674,6 +690,7 @@ int main()
                 cout << "Daftar produk kosong." << endl;
             }
             break;
+        }
         case 6:
         {
             if (!kosong(tokoKelontong))
