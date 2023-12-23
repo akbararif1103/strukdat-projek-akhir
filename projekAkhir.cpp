@@ -71,6 +71,9 @@ int fungsiHash(const char *kode);
 // Fungsi untuk menambahkan produk
 void tambahProduk(TokoKelontong &toko, const Produk &produk);
 
+// Fungsi untuk menampilkan data produk menggunakan hash
+void tampilkanDataProdukHash(const TokoKelontong &toko);
+
 // Fungsi untuk mencari produk berdasarkan kode produk menggunakan hash
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk);
 
@@ -176,6 +179,18 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk)
     cout << "Produk berhasil ditambahkan." << endl;
 }
 
+void tampilkanDataProdukInput(const TokoKelontong &toko)
+{
+    cout << "Data Produk yang Telah Diinput:\n";
+    cout << setw(10) << "Kode" << setw(15) << "Harga" << setw(30) << "Nama" << endl;
+    cout << setfill('-') << setw(55) << "-" << setfill(' ') << endl;
+
+    for (int i = 0; i < toko.jumlahProduk; ++i)
+    {
+        cout << setw(10) << toko.daftarProduk[i].kode << setw(15) << toko.daftarProduk[i].harga << setw(30) << toko.daftarProduk[i].nama << endl;
+    }
+}
+
 Produk cariDenganKode(const TokoKelontong &toko, const char *kodeProduk)
 {
     int indeks = fungsiHash(kodeProduk);
@@ -251,6 +266,25 @@ void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &
         if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
         {
             cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
+        }
+    }
+}
+
+// Implementasi fungsi tampilkanDataProdukHash
+void tampilkanDataProdukHash(const TokoKelontong &toko)
+{
+    cout << "Tampilan Data Produk Menggunakan Hash:" << endl;
+
+    for (int i = 0; i < TokoKelontong::UKURAN_TABEL_HASH; ++i)
+    {
+        // Cek apakah slot tidak kosong dalam tabel hash
+        if (toko.tabelHash[i].nama[0] != '\0')
+        {
+            cout << "Slot " << i << ":" << endl;
+            cout << " Kode Produk\t :" << toko.tabelHash[i].kode << endl;
+            cout << " Nama Produk\t :" << toko.tabelHash[i].nama << endl;
+            cout << " Harga Produk\t :" << toko.tabelHash[i].harga << endl;
+            cout << "-------------------------------------------" << endl;
         }
     }
 }
@@ -508,20 +542,20 @@ int main()
 
             break;
         }
-        /*case 2:
+        case 2:
         {
-            system("cls");
-            if (!kosong(tokoKelontong))
-            {
-                // Tampilkan data produk menggunakan struktur hash
-                tampilkanDataProdukHash(tokoKelontong);
-            }
-            else
-            {
-                cout << "Daftar produk kosong." << endl;
-            }
-            break;
-        }*/
+           system("cls");
+        if (!kosong(tokoKelontong))
+        {
+            // Tampilkan data produk menggunakan struktur hash
+            tampilkanDataProdukInput(tokoKelontong);
+        }
+        else
+        {
+            cout << "Daftar produk kosong." << endl;
+        }
+        break;
+        }
         case 3:
         {
             system("cls");
