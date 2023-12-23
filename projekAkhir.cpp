@@ -253,7 +253,6 @@ void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &
     }
 }
 
-
 void urutBerdasarkanNamaDescending(TokoKelontong &toko)
 {
     // Menggunakan algoritma sort() dari C++ STL
@@ -465,11 +464,12 @@ int main()
         system("cls");
         cout << "\n------------|Menu|--------------\n\n";
         cout << " 1. Tambah Produk\n";
-        cout << " 2. Searching (Kode)\n";
-        cout << " 3. Searching (Rentang Nama)\n";
-        cout << " 4. Sorting Descending (Nama)\n";
-        cout << " 5. Hapus Produk\n";
-        cout << " 6. Riwayat Produk yang Dihapus\n";
+        cout << " 2. Tampilkan Semua Produk\n";
+        cout << " 3. Searching (Kode)\n";
+        cout << " 4. Searching (Rentang Nama)\n";
+        cout << " 5. Sorting Descending (Nama)\n";
+        cout << " 6. Hapus Produk\n";
+        cout << " 7. Riwayat Produk yang Dihapus\n";
         cout << " 0. Keluar\n";
         cout << "\n================================\n\n";
         cout << "Masukkan pilihan Anda: ";
@@ -506,7 +506,21 @@ int main()
 
             break;
         }
-        case 2:
+        /*case 2:
+        {
+            system("cls");
+            if (!kosong(tokoKelontong))
+            {
+                // Tampilkan data produk menggunakan struktur hash
+                tampilkanDataProdukHash(tokoKelontong);
+            }
+            else
+            {
+                cout << "Daftar produk kosong." << endl;
+            }
+            break;
+        }*/
+        case 3:
         {
             system("cls");
             char kodeProduk[10];
@@ -529,7 +543,7 @@ int main()
             break;
         }
 
-        case 3:
+        case 4:
         {
             system("cls");
             char namaAwal[50];
@@ -551,7 +565,7 @@ int main()
             break;
         }
 
-        case 4:
+        case 5:
             if (!kosong(tokoKelontong))
             {
                 system("cls");
@@ -562,7 +576,7 @@ int main()
                 cout << "Daftar produk kosong." << endl;
             }
             break;
-        case 5:
+        case 6:
         {
             if (!kosong(tokoKelontong))
             {
@@ -582,7 +596,7 @@ int main()
             break;
         }
 
-        case 6:
+        case 7:
         {
             system("cls");
             int pilihanTampil;
