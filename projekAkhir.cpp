@@ -252,35 +252,38 @@ NodePohon *sisipkanKePohonRentang(NodePohon *node, const Produk &produk)
 
 void cariDenganRentangNamaPTB(const TokoKelontong &toko, const RentangNama &rentang)
 {
-    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << "):" << endl;
+    cout << "Produk dengan nama dalam rentang (" << rentang.namaAwal << " - " << rentang.namaAkhir << ") " << endl;
     cariDenganRentangNamaPTBRekursif(toko.akar, rentang);
 }
 
 void cariDenganRentangNamaPTBRekursif(const NodePohon *node, const RentangNama &rentang)
 {
     if (node != nullptr)
+{
+    
+    // Cek apakah produk dalam rentang nama
+    if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
     {
-        cout << "Hasil : \ny";
-        // Cek apakah produk dalam rentang nama
-        if (strcmp(node->produk.nama, rentang.namaAwal) >= 0 && strcmp(node->produk.nama, rentang.namaAkhir) <= 0)
-        {
-            cout << " Kode Produk\t :" << node->produk.kode << endl;
-            cout << " Nama Produk\t :" << node->produk.nama << endl;
-            cout << " Harga Produk\t :" << node->produk.harga << endl;
-        }
-
-        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
-        if (strcmp(node->produk.nama, rentang.namaAwal) > 0)
-        {
-            cariDenganRentangNamaPTBRekursif(node->kiri, rentang);
-        }
-
-        // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kanan
-        if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
-        {
-            cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
-        }
+        cout << " Kode Produk\t :" << node->produk.kode << endl;
+        cout << " Nama Produk\t :" << node->produk.nama << endl;
+        cout << " Harga Produk\t :" << node->produk.harga << endl;
+        cout << "-------------------------------------------\n";
     }
+
+    // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kiri
+    if (strcmp(node->produk.nama, rentang.namaAwal) > 0)
+    {
+        cariDenganRentangNamaPTBRekursif(node->kiri, rentang);
+    }
+
+    // Cek apakah pencarian perlu dilanjutkan pada sub-pohon kanan
+    if (strcmp(node->produk.nama, rentang.namaAkhir) < 0)
+    {
+        cariDenganRentangNamaPTBRekursif(node->kanan, rentang);
+    }
+
+}
+
 }
 
 // Implementasi fungsi tampilkanDataProdukHash
@@ -640,11 +643,11 @@ int main()
                 char namaAkhir[50];
 
                 cout << "-------------Menu Pencarian Rentang Nama---------------\n\n";
-                cout << "Masukkan nama awal rentang: ";
+                cout << "Masukkan nama 'awal rentang'\t: ";
                 cin.ignore();
                 cin.getline(namaAwal, sizeof(namaAwal));
 
-                cout << "Masukkan nama akhir rentang: ";
+                cout << "Masukkan nama 'akhir rentang'\t: ";
                 cin.getline(namaAkhir, sizeof(namaAkhir));
 
                 RentangNama rentang;
