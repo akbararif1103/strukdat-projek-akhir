@@ -439,6 +439,8 @@ void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
     {
         tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
+    } else {
+        cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
 
@@ -448,6 +450,8 @@ void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
     {
         tampilkanProdukDihapus(node->data);
         tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
+    } else {
+        cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
 
@@ -457,6 +461,8 @@ void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
     {
         tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
         tampilkanProdukDihapus(node->data);
+    } else {
+        cout << "Tidak ada produk yang dihapus" << endl;
     }
 }
 
@@ -533,6 +539,14 @@ int main()
             int jumlahBarang;
             cout << "Masukkan banyak jenis produk yang ingin Anda inputkan: ";
             cin >> jumlahBarang;
+            while (cin.fail() || jumlahBarang < 1)
+            {
+                cout << "Input salah/invalid\n";
+                cin.clear();
+                cin.ignore();
+                cout << "Masukkan banyak jenis produk yang ingin Anda inputkan: ";
+                cin >> jumlahBarang;
+            }
 
             system("cls");
             cout << "-------------Menu Input Data---------------\n\n";
@@ -547,6 +561,14 @@ int main()
                 cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
                 cout << " Harga Produk\t\t: ";
                 cin >> produkBaru.harga;
+                while (cin.fail() || produkBaru.harga < 0) // ketika input banyak harga bukan angka atau input < 0
+                {
+                    cout << " Input salah\n";
+                    cin.clear();
+                    cin.ignore();
+                    cout << " Harga Produk\t\t: ";
+                    cin >> produkBaru.harga;
+                }
                 cout << " Buat Kode Produk\t: ";
                 cin >> produkBaru.kode;
                 cout << endl;
