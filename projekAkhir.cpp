@@ -8,9 +8,9 @@ using namespace std;
 // Enum untuk jenis urutan display
 enum UrutanTampil
 {
-    SESUAI_URUTAN,
-    PRE_URUTAN,
-    POST_URUTAN
+    in_order,
+    pre_order,
+    post_oder
 };
 
 // Struktur data untuk produk
@@ -42,9 +42,9 @@ struct NodePohon
 struct NodeProdukDihapus
 {
     Produk data;
-    NodeProdukDihapus *selanjutnya;
+    NodeProdukDihapus *next;
 
-    NodeProdukDihapus(const Produk &p) : data(p), selanjutnya(nullptr) {}
+    NodeProdukDihapus(const Produk &p) : data(p), next(nullptr) {}
 };
 
 // Struktur untuk manajemen toko
@@ -104,9 +104,9 @@ NodePohon *hapusDariPohon(NodePohon *node, const char *kodeProduk);
 void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil urutan);
 
 // Fungsi-fungsi untuk menampilkan produk yang dihapus dengan urutan tertentu
-void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node);
-void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node);
-void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node);
+void tampilkanRiwayatProdukDihapusInOrder(const NodeProdukDihapus *node);
+void tampilkanRiwayatProdukDihapusPreOrder(const NodeProdukDihapus *node);
+void tampilkanRiwayatProdukDihapusPostOrder(const NodeProdukDihapus *node);
 
 // Fungsi untuk menampilkan produk yang dihapus
 void tampilkanProdukDihapus(const Produk &produkDihapus);
@@ -152,7 +152,7 @@ void tambahProduk(TokoKelontong &toko, const Produk &produk)
             cout << "Produk dengan kode " << produk.kode << " telah dihapus. Tidak dapat menambahkan produk yang sama lagi." << endl;
             return;
         }
-        saatIni = saatIni->selanjutnya;
+        saatIni = saatIni->next;
     }
 
     // Alokasi dinamis untuk menyimpan daftar produk
@@ -339,7 +339,7 @@ void tambahNodeProdukDihapus(TokoKelontong &toko, const Produk &produk)
     NodeProdukDihapus *nodeBaru = new NodeProdukDihapus(produk);
 
     // Tambahkan ke depan linked list
-    nodeBaru->selanjutnya = toko.produkDihapusAwal;
+    nodeBaru->next = toko.produkDihapusAwal;
     toko.produkDihapusAwal = nodeBaru;
 }
 
@@ -427,46 +427,46 @@ void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil uruta
 {
     cout << "Riwayat Produk yang Dihapus: \n" << endl;
 
-    if (urutan == SESUAI_URUTAN)
+    if (urutan == in_order)
     {
         // Menampilkan berdasarkan urutan sesuai
-        tampilkanRiwayatProdukDihapusSesuaiUrutan(toko.produkDihapusAwal);
+        tampilkanRiwayatProdukDihapusInOrder(toko.produkDihapusAwal);
     }
-    else if (urutan == PRE_URUTAN)
+    else if (urutan == pre_order)
     {
         // Menampilkan berdasarkan urutan pre
-        tampilkanRiwayatProdukDihapusPreUrutan(toko.produkDihapusAwal);
+        tampilkanRiwayatProdukDihapusPreOrder(toko.produkDihapusAwal);
     }
-    else if (urutan == POST_URUTAN)
+    else if (urutan == post_oder)
     {
         // Menampilkan berdasarkan urutan post
-        tampilkanRiwayatProdukDihapusPostUrutan(toko.produkDihapusAwal);
+        tampilkanRiwayatProdukDihapusPostOrder(toko.produkDihapusAwal);
     }
 }
 
-void tampilkanRiwayatProdukDihapusSesuaiUrutan(const NodeProdukDihapus *node)
+void tampilkanRiwayatProdukDihapusInOrder(const NodeProdukDihapus *node)
 {
     if (node != nullptr)
     {
-        tampilkanRiwayatProdukDihapusSesuaiUrutan(node->selanjutnya);
+        tampilkanRiwayatProdukDihapusInOrder(node->next);
         tampilkanProdukDihapus(node->data);
     }
 }
 
-void tampilkanRiwayatProdukDihapusPreUrutan(const NodeProdukDihapus *node)
+void tampilkanRiwayatProdukDihapusPreOrder(const NodeProdukDihapus *node)
 {
     if (node != nullptr)
     {
         tampilkanProdukDihapus(node->data);
-        tampilkanRiwayatProdukDihapusPreUrutan(node->selanjutnya);
+        tampilkanRiwayatProdukDihapusPreOrder(node->next);
     }
 }
 
-void tampilkanRiwayatProdukDihapusPostUrutan(const NodeProdukDihapus *node)
+void tampilkanRiwayatProdukDihapusPostOrder(const NodeProdukDihapus *node)
 {
     if (node != nullptr)
     {
-        tampilkanRiwayatProdukDihapusPostUrutan(node->selanjutnya);
+        tampilkanRiwayatProdukDihapusPostOrder(node->next);
         tampilkanProdukDihapus(node->data);
     }
 }
@@ -727,9 +727,9 @@ int main()
                 cout << "-------------Riwayat Hapus Produk---------------\n\n";
 
                 cout << "Pilih urutan tampilan untuk riwayat produk yang dihapus:\n";
-                cout << "1. Sesuai urutan\n";
-                cout << "2. Pre-urutan\n";
-                cout << "3. Post-urutan\n"
+                cout << "1. In-Order\n";
+                cout << "2. Pre-Order\n";
+                cout << "3. Post-Order\n"
                      << endl;
                 cout << "Masukkan pilihan Anda: ";
                 cin >> pilihanTampil;
@@ -739,17 +739,17 @@ int main()
                 switch (pilihanTampil)
                 {
                 case 1:
-                    urutanTampil = SESUAI_URUTAN;
+                    urutanTampil = in_order;
                     break;
                 case 2:
-                    urutanTampil = PRE_URUTAN;
+                    urutanTampil = pre_order;
                     break;
                 case 3:
-                    urutanTampil = POST_URUTAN;
+                    urutanTampil = post_oder;
                     break;
                 default:
                     cout << "Pilihan tidak valid. Kembali ke tampilan sesuai urutan secara default.\n";
-                    urutanTampil = SESUAI_URUTAN;
+                    urutanTampil = in_order;
                     break;
                 }
                 tampilkanRiwayatProdukDihapus(tokoKelontong, urutanTampil);
