@@ -425,7 +425,8 @@ NodePohon *hapusDariPohon(NodePohon *node, const char *kodeProduk)
 
 void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil urutan)
 {
-    cout << "Riwayat Produk yang Dihapus: \n" << endl;
+    cout << "Riwayat Produk yang Dihapus: \n"
+         << endl;
 
     if (urutan == in_order)
     {
@@ -579,14 +580,16 @@ int main()
                 cin.getline(produkBaru.nama, sizeof(produkBaru.nama));
                 cout << " Harga Produk\t\t: ";
                 cin >> produkBaru.harga;
-                while (cin.fail() || produkBaru.harga < 0) // ketika input banyak harga bukan angka atau input < 0
+
+                while (cin.fail() || produkBaru.harga < 0)
                 {
                     cout << " Input salah\n";
                     cin.clear();
-                    cin.ignore();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Membersihkan buffer input
                     cout << " Harga Produk\t\t: ";
                     cin >> produkBaru.harga;
                 }
+
                 cout << " Buat Kode Produk\t: ";
                 cin >> produkBaru.kode;
                 cout << endl;
