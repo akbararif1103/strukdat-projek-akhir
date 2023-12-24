@@ -425,7 +425,7 @@ NodePohon *hapusDariPohon(NodePohon *node, const char *kodeProduk)
 
 void tampilkanRiwayatProdukDihapus(const TokoKelontong &toko, UrutanTampil urutan)
 {
-    cout << "Riwayat Produk yang Dihapus:" << endl;
+    cout << "Riwayat Produk yang Dihapus: \n" << endl;
 
     if (urutan == SESUAI_URUTAN)
     {
